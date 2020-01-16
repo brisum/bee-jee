@@ -1,0 +1,12 @@
+{
+    "require": {
+        "symfony/routing": "^4.4",
+        "brisum/lib-object-manager": "^0.3.0",
+        "doctrine/orm": "^2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": ["src"]
+        }
+    }
+}

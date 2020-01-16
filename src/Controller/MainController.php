@@ -45,7 +45,9 @@ class MainController
                 'tasks' => $taskService->getTasksByPage($page, $sort, $order),
                 'taskPaginationLinks' => $taskPaginationService->getPaginationLinks(
                     $taskService->getTaskPageCount(),
-                    $page
+                    $page,
+                    $sort,
+                    $order
                 ),
                 'taskLink' => $routeService->generate(self::INDEX_ACTION_NAME)
             ]

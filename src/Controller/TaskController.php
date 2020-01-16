@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Utils\Doctrine\DoctrineService;
+use App\Utils\EmailValidator;
 use App\Utils\RouteService;
+use App\Utils\Security\SecurityService;
 use App\Utils\Task\TaskService;
 use App\Utils\View;
 
@@ -18,17 +20,41 @@ class TaskController
      * @param RouteService $routeService
      * @param View $view
      * @param TaskService $taskService
+     * @param EmailValidator $emailValidator
      */
     public function newAction(
         RouteService $routeService,
         View $view,
-        TaskService $taskService
+        TaskService $taskService,
+        EmailValidator $emailValidator
     ) {
+        $errors = [];
+        $request = [
+            'username' => '',
+            'email' => '',
+            'description' => '',
+        ];
+
         if ('post' == strtolower($_SERVER['REQUEST_METHOD'])) {
             $request = $_POST;
-            $task = $taskService->createFromRequest($request);
+            $request['username'] = htmlentities(strip_tags($request['username']));
+            $request['email'] = htmlentities(strip_tags($request['email']));
+            $request['description'] = htmlentities(strip_tags($request['description']));
 
-            if ($task) {
+            if (empty($request['username'])) {
+                $errors[] = 'Please, enter username.';
+            }
+            if (empty($request['email'])) {
+                $errors[] = 'Please, enter email.';
+            } elseif (!$emailValidator->isValid($request['email'])) {
+                $errors[] = 'Invalid email.';
+            }
+            if (empty($request['description'])) {
+                $errors[] = 'Please, enter description.';
+            }
+
+            if (empty($errors)) {
+                $task = $taskService->createFromRequest($request);
                 $targetUrl = $routeService->generate(self::CREATE_SUCCESS_ACTION_NAME, ['task' => $task->getId()]);
                 header("Location: {$targetUrl}", true, 302);
                 die();
@@ -38,7 +64,9 @@ class TaskController
         $view->render(
             'task/new.php',
             [
-                'formAction' => $routeService->generate(self::NEW_ACTION_NAME)
+                'errors' => $errors,
+                'formAction' => $routeService->generate(self::NEW_ACTION_NAME),
+                'request' => $request
             ]
         );
     }
@@ -68,14 +96,23 @@ class TaskController
     public function editAction(
         DoctrineService $doctrineService,
         RouteService $routeService,
+        SecurityService $securityService,
         View $view,
         TaskService $taskService,
+        EmailValidator $emailValidator,
         $taskId
     ) {
+        if (!$securityService->isSignedIn()) {
+            $targetUrl = $routeService->generate(AuthController::LOGIN_ACTION_NAME);
+            header("Location: {$targetUrl}", true, 302);
+            die();
+        }
+
         $em = $doctrineService->getEntityManager();
         $taskId = intval($taskId);
         /** @var Task $task */
         $task = $taskId ? $em->getRepository(Task::class)->find($taskId) : null;
+        $errors = [];
 
         if (!$task) {
             $view->render('404.php');
@@ -84,9 +121,25 @@ class TaskController
 
         if ('post' == strtolower($_SERVER['REQUEST_METHOD'])) {
             $request = $_POST;
-            $taskService->updateFromRequest($task, $request);
+            $request['username'] = htmlentities(strip_tags($request['username']));
+            $request['email'] = htmlentities(strip_tags($request['email']));
+            $request['description'] = htmlentities(strip_tags($request['description']));
+            $request['status'] = empty($request['status']) ? TaskService::STATUS_NEW : TaskService::STATUS_DONE;
 
-            if ($task) {
+            if (empty($request['username'])) {
+                $errors[] = 'Please, enter username.';
+            }
+            if (empty($request['email'])) {
+                $errors[] = 'Please, enter email.';
+            } elseif (!$emailValidator->isValid($request['email'])) {
+                $errors[] = 'Invalid email.';
+            }
+            if (empty($request['description'])) {
+                $errors[] = 'Please, enter description.';
+            }
+
+            if (empty($errors)) {
+                $taskService->updateFromRequest($task, $request);
                 $targetUrl = $routeService->generate(self::EDIT_ACTION_NAME, ['taskId' => $task->getId()]);
                 header("Location: {$targetUrl}", true, 302);
                 die();
@@ -96,6 +149,7 @@ class TaskController
         $view->render(
             'task/edit.php',
             [
+                'errors' => $errors,
                 'task' => $task
             ]
         );

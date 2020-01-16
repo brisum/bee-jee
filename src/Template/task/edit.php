@@ -11,6 +11,12 @@ use App\Utils\Task\TaskService;
 
 <h1 class="mt-5">Edit Task</h1>
 
+<?php foreach ($errors as $error) : ?>
+    <div class="alert alert-danger" role="alert">
+        <?php echo $error; ?>
+    </div>
+<?php endforeach; ?>
+
 <form action="" method="post">
     <div class="form-group">
         <label for="username">
@@ -35,11 +41,11 @@ use App\Utils\Task\TaskService;
     </div>
 
     <div class="form-group">
-        <label for="status">Example select</label>
-        <select class="form-control" id="status" name="status">
-            <option value="<?php echo TaskService::STATUS_NEW; ?>">new</option>
-            <option value="<?php echo TaskService::STATUS_DONE; ?>">done</option>
-        </select>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="status" name="status" value="done"
+                <?php echo TaskService::STATUS_DONE == $task->getStatus() ? 'checked' : '';?> />
+            <label class="form-check-label" for="status">Is done</label>
+        </div>
     </div>
 
     <div class="form-group">

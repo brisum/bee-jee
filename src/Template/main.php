@@ -68,7 +68,7 @@ use App\Entity\Task;
                             Edited by Admin
                         </div>
                     <?php endif; ?>
-                    <?php echo htmlentities($task->getDescription()); ?>
+                    <?php echo $task->getDescription(); ?>
                 </td>
                 <td>
                     <?php echo $task->getStatus(); ?>

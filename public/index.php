@@ -1,6 +1,7 @@
 <?php
 
 use App\Utils\RouteService;
+use App\Utils\View;
 use Brisum\Lib\ObjectManager;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
@@ -12,12 +13,14 @@ ini_set('display_errors', 1);
 $objectManager = ObjectManager::getInstance();
 /** @var RouteService $routeService */
 $routeService = ObjectManager::getInstance()->get('App\Utils\RouteService');
+/** @var View $view */
+$view = $objectManager->get('App\Utils\View');
 
 $routeParameters = null;
 try {
     $routeParameters = $routeService->match();
 } catch (ResourceNotFoundException $e) {
-    echo '404';
+    $view->render('404.php');
     die();
 }
 
@@ -28,10 +31,15 @@ if (
     // TODO: Exception
 }
 
-$controllerClass = $routeParameters['_controller'][0];
-$controllerMethod = $routeParameters['_controller'][1];
-$objectManager->invoke(
-    $objectManager->create($controllerClass),
-    $controllerMethod,
-    $routeParameters
-);
+try {
+    $controllerClass = $routeParameters['_controller'][0];
+    $controllerMethod = $routeParameters['_controller'][1];
+    $objectManager->invoke(
+        $objectManager->create($controllerClass),
+        $controllerMethod,
+        $routeParameters
+    );
+} catch (Exception $e) {
+    $view->render('error.php');
+    die();
+}

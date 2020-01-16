@@ -30,9 +30,16 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/task/new">New Task</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
+
+                    <?php if ($isAdmin) : ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Logout</a>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Login</a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
@@ -40,4 +47,4 @@
 </header>
 
 <!-- Begin page content -->
-<main role="main" class="container">
+<main role="main" class="container pb-3">

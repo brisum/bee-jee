@@ -68,4 +68,20 @@ class TaskService
 
         return $task;
     }
+
+    public function updateFromRequest(Task $task, $request)
+    {
+        if ($task->getDescription() != $request['description']) {
+            $task->setIsEditedByAdmin(true);
+        }
+
+        $task->setUsername($request['username']);
+        $task->setEmail($request['email']);
+        $task->setDescription($request['description']);
+        $task->setStatus($request['status']);
+
+        $this->em->flush($task);
+
+        return $task;
+    }
 }

@@ -44,6 +44,11 @@ use App\Entity\Task;
                 <i class="fa fa-long-arrow-up sort-icon" aria-hidden="true"></i>
             </a>
         </th>
+        <?php if ($isAdmin) : ?>
+            <th scope="col">
+                Actions
+            </th>
+        <?php endif; ?>
     </tr>
     </thead>
     <tbody>
@@ -58,11 +63,21 @@ use App\Entity\Task;
                     <?php echo $task->getEmail(); ?>
                 </td>
                 <td>
+                    <?php if ($task->getIsEditedByAdmin()) : ?>
+                        <div class="alert alert-info p-1" role="alert">
+                            Edited by Admin
+                        </div>
+                    <?php endif; ?>
                     <?php echo htmlentities($task->getDescription()); ?>
                 </td>
                 <td>
                     <?php echo $task->getStatus(); ?>
                 </td>
+                <?php if ($isAdmin) : ?>
+                    <td>
+                        <a href="/task/<?php echo $task->getId(); ?>/edit">Edit</a>
+                    </td>
+                <?php endif; ?>
             </tr>
         <?php endforeach; ?>
     </tbody>

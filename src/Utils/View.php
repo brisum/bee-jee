@@ -2,6 +2,8 @@
 
 namespace App\Utils;
 
+use App\Utils\Security\SecurityService;
+
 class View
 {
     /**
@@ -9,13 +11,16 @@ class View
      */
     protected $dirTemplate;
 
+    protected $isAdmin;
+
     /**
      * View constructor.
      * @param string $dirTemplate
      */
-    public function __construct($dirTemplate = '')
+    public function __construct(SecurityService $securityService, $dirTemplate = '')
     {
         $this->dirTemplate = rtrim($dirTemplate, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->isAdmin = $securityService->isSignedIn();
     }
 
     /**
@@ -27,6 +32,7 @@ class View
     {
         /* Use unique name of template path for avoiding overwrite $template variable by extract $vars */
         $appViewTemplatePath = $this->dirTemplate . $template;
+        $isAdmin = $this->isAdmin;
         extract($vars);
         require $appViewTemplatePath;
     }

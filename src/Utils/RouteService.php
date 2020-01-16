@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Controller\AuthController;
 use App\Controller\MainController;
 use App\Controller\TaskController;
 use Symfony\Component\HttpFoundation\Request;
@@ -79,6 +80,43 @@ class RouteService
                 '', // $host
                 [], // $schemes,
                 ['GET']
+            )
+        );
+        $this->routes->add(
+            TaskController::EDIT_ACTION_NAME,
+            new Route(
+                '/task/{taskId}/edit',
+                ['_controller' => [TaskController::class, 'editAction']],
+                ['taskId' => '[0-9]+'], // requirements
+                [], // $options
+                '', // $host
+                [], // $schemes,
+                ['GET', 'POST']
+            )
+        );
+
+        $this->routes->add(
+            AuthController::LOGIN_ACTION_NAME,
+            new Route(
+                '/login',
+                ['_controller' => [AuthController::class, 'loginAction']],
+                [], // requirements
+                [], // $options
+                '', // $host
+                [], // $schemes,
+                ['GET', 'POST']
+            )
+        );
+        $this->routes->add(
+            AuthController::LOGOUT_ACTION_NAME,
+            new Route(
+                '/logout',
+                ['_controller' => [AuthController::class, 'logoutAction']],
+                [], // requirements
+                [], // $options
+                '', // $host
+                [], // $schemes,
+                ['GET', 'POST']
             )
         );
     }

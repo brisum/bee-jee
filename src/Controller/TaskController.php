@@ -12,6 +12,7 @@ class TaskController
 {
     const NEW_ACTION_NAME = 'task_new';
     const CREATE_SUCCESS_ACTION_NAME = 'task_create_success';
+    const EDIT_ACTION_NAME = 'task_edit_action';
 
     /**
      * @param RouteService $routeService
@@ -58,6 +59,42 @@ class TaskController
 
         $view->render(
             'task/create-success.php',
+            [
+                'task' => $task
+            ]
+        );
+    }
+
+    public function editAction(
+        DoctrineService $doctrineService,
+        RouteService $routeService,
+        View $view,
+        TaskService $taskService,
+        $taskId
+    ) {
+        $em = $doctrineService->getEntityManager();
+        $taskId = intval($taskId);
+        /** @var Task $task */
+        $task = $taskId ? $em->getRepository(Task::class)->find($taskId) : null;
+
+        if (!$task) {
+            $view->render('404.php');
+            die();
+        }
+
+        if ('post' == strtolower($_SERVER['REQUEST_METHOD'])) {
+            $request = $_POST;
+            $taskService->updateFromRequest($task, $request);
+
+            if ($task) {
+                $targetUrl = $routeService->generate(self::EDIT_ACTION_NAME, ['taskId' => $task->getId()]);
+                header("Location: {$targetUrl}", true, 302);
+                die();
+            }
+        }
+
+        $view->render(
+            'task/edit.php',
             [
                 'task' => $task
             ]

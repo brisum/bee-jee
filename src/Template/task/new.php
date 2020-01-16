@@ -19,7 +19,7 @@
         <label for="description">Description</label>
         <textarea class="form-control" id="description" rows="10" name="description"></textarea>
     </div>
-    <button type="submit" class="btn btn-primary">Create task</button>
+    <button type="submit" class="btn btn-primary">Create</button>
 </form>
 
 

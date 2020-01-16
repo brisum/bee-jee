@@ -37,11 +37,19 @@ class TaskService
         return ceil($taskCount / self::TASK_PER_PAGE);
     }
 
-    public function getTasksByPage(int $page)
+    public function getTasksByPage(int $page, $sort = 'id', $order = 'desc')
     {
+        if (!in_array($sort, ['id', 'username', 'email', 'status'])) {
+            $sort = 'id';
+        }
+        if (!in_array($order, ['asc', 'desc'])) {
+            $order = 'asc';
+        }
+
         return $this->em->getRepository(Task::class)->createQueryBuilder('t')
             ->setMaxResults(TaskService::TASK_PER_PAGE)
             ->setFirstResult(($page-1) * TaskService::TASK_PER_PAGE)
+            ->orderBy("t.{$sort}", $order)
             ->getQuery()
             ->getResult();
     }

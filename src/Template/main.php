@@ -11,10 +11,39 @@ use App\Entity\Task;
 <table class="table table-striped">
     <thead>
     <tr>
-        <th scope="col">#</th>
-        <th scope="col">Username</th>
-        <th scope="col">Email</th>
-        <th scope="col">Status</th>
+        <th scope="col">
+            Username
+
+
+            <a href="<?php echo $taskLink; ?>?sort=username&order=asc">
+                <i class="fa fa-long-arrow-down sort-icon" aria-hidden="true"></i>
+            </a>
+            <a href="<?php echo $taskLink; ?>?sort=username&order=desc">
+                <i class="fa fa-long-arrow-up sort-icon" aria-hidden="true"></i>
+            </a>
+        </th>
+        <th scope="col">
+            Email
+
+            <a href="<?php echo $taskLink; ?>?sort=email&order=asc">
+                <i class="fa fa-long-arrow-down sort-icon" aria-hidden="true"></i>
+            </a>
+            <a href="<?php echo $taskLink; ?>?sort=email&order=desc">
+                <i class="fa fa-long-arrow-up sort-icon" aria-hidden="true"></i>
+            </a>
+        </th>
+        <th scope="col">
+            Description
+        </th>
+        <th scope="col">
+            Status
+            <a href="<?php echo $taskLink; ?>?sort=status&order=asc">
+                <i class="fa fa-long-arrow-down sort-icon" aria-hidden="true"></i>
+            </a>
+            <a href="<?php echo $taskLink; ?>?sort=status&order=desc">
+                <i class="fa fa-long-arrow-up sort-icon" aria-hidden="true"></i>
+            </a>
+        </th>
     </tr>
     </thead>
     <tbody>
@@ -22,14 +51,14 @@ use App\Entity\Task;
             <?php /** @var Task $task */ ?>
 
             <tr>
-                <th scope="row">
-                    <?php echo $task->getId(); ?>
-                </th>
                 <td>
                     <?php echo $task->getUsername(); ?>
                 </td>
                 <td>
                     <?php echo $task->getEmail(); ?>
+                </td>
+                <td>
+                    <?php echo htmlentities($task->getDescription()); ?>
                 </td>
                 <td>
                     <?php echo $task->getStatus(); ?>
@@ -39,34 +68,16 @@ use App\Entity\Task;
     </tbody>
 </table>
 
-<?php if (1 < $taskPageCount) : ?>
+<?php if ($taskPaginationLinks) : ?>
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
-            <?php if (1 < $taskPageCount && 1 < $taskPage) : ?>
+            <?php foreach ($taskPaginationLinks as $taskPaginationLink): ?>
                 <li class="page-item">
-                    <a class="page-link" href="/page/<?php echo $taskPage - 1; ?>/" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only">Previous</span>
+                    <a class="page-link" href="<?php echo $taskPaginationLink['link']; ?>">
+                        <?php echo $taskPaginationLink['text']; ?>
                     </a>
                 </li>
-            <?php endif; ?>
-
-            <?php for ($p = 1; $p <= $taskPageCount; $p++): ?>
-                <li class="page-item">
-                    <a class="page-link" href="/page/<?php echo $p; ?>/">
-                        <?php echo $p; ?>
-                    </a>
-                </li>
-            <?php endfor; ?>
-
-            <?php if (1 < $taskPageCount && $taskPage < $taskPageCount) : ?>
-                <li class="page-item">
-                    <a class="page-link" href="/page/<?php echo $taskPage + 1; ?>/" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </li>
-            <?php endif; ?>
+            <?php endforeach; ?>
         </ul>
     </nav>
 <?php endif; ?>

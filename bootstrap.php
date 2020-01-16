@@ -4,7 +4,7 @@ use Brisum\Lib\ObjectManager;
 
 define('ABSPATH', __DIR__);
 
-$autoload = require(ABSPATH . '/vendor/autoload.php');
+require ABSPATH . '/vendor/autoload.php';
 
 $config = [
     'preference' => [],
@@ -31,7 +31,8 @@ $config = [
                     'value' => ABSPATH . '/src/Template'
                 ]
             ]
-        ]
+        ],
+        'App\Utils\Task\TaskService' => ['shared' => true]
     ],
 ];
 $sharedInstances = [

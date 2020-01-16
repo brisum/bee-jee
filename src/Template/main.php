@@ -1,67 +1,74 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+<?php require __DIR__ . '/header.php'; ?>
 
-    <title>Tasks</title>
+<?php
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+use App\Entity\Task;
 
-    <!-- Custom styles for this template -->
-    <link href="/assets/css/style.css" rel="stylesheet">
-</head>
+?>
 
-<body>
+<h1 class="mt-5">Tasks</h1>
 
-<header>
-    <!-- Fixed navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a class="navbar-brand" href="#">Fixed navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Username</th>
+        <th scope="col">Email</th>
+        <th scope="col">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($tasks as $task) : ?>
+            <?php /** @var Task $task */ ?>
+
+            <tr>
+                <th scope="row">
+                    <?php echo $task->getId(); ?>
+                </th>
+                <td>
+                    <?php echo $task->getUsername(); ?>
+                </td>
+                <td>
+                    <?php echo $task->getEmail(); ?>
+                </td>
+                <td>
+                    <?php echo $task->getStatus(); ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+
+<?php if (1 < $taskPageCount) : ?>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <?php if (1 < $taskPageCount && 1 < $taskPage) : ?>
+                <li class="page-item">
+                    <a class="page-link" href="/page/<?php echo $taskPage - 1; ?>/" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+            <?php endif; ?>
+
+            <?php for ($p = 1; $p <= $taskPageCount; $p++): ?>
+                <li class="page-item">
+                    <a class="page-link" href="/page/<?php echo $p; ?>/">
+                        <?php echo $p; ?>
+                    </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Disabled</a>
+            <?php endfor; ?>
+
+            <?php if (1 < $taskPageCount && $taskPage < $taskPageCount) : ?>
+                <li class="page-item">
+                    <a class="page-link" href="/page/<?php echo $taskPage + 1; ?>/" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
                 </li>
-            </ul>
-            <form class="form-inline mt-2 mt-md-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div>
+            <?php endif; ?>
+        </ul>
     </nav>
-</header>
+<?php endif; ?>
 
-<!-- Begin page content -->
-<main role="main" class="container">
-    <h1 class="mt-5">Sticky footer with fixed navbar</h1>
-    <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A fixed navbar has been added with <code>padding-top: 60px;</code> on the <code>body &gt; .container</code>.</p>
-    <p>Back to <a href="../sticky-footer/">the default sticky footer</a> minus the navbar.</p>
-</main>
-
-<footer class="footer">
-    <div class="container">
-        <span class="text-muted">Place sticky footer content here.</span>
-    </div>
-</footer>
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-</body>
-</html>
+<?php require __DIR__ . '/footer.php'; ?>

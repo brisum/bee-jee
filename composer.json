@@ -2,7 +2,8 @@
     "require": {
         "symfony/routing": "^4.4",
         "brisum/lib-object-manager": "^0.3.0",
-        "doctrine/orm": "^2.5"
+        "doctrine/orm": "^2.5",
+        "symfony/http-foundation": "^4.4"
     },
     "autoload": {
         "psr-4": {
